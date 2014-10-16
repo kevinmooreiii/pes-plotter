@@ -1,0 +1,24 @@
+$energies
+1 - M1 -  0.00
+2 - M2 - 10.00
+3 - M3 -  5.00
+4 - N2 - 15.00 - excite - 2 - 1
+5 - O2 - 20.00 - excite - 2 - 2
+6 - N3 - 10.00 - excite - 3 - 1
+7 - O3 - 15.00 - excite - 3 - 2
+$end
+
+$connect
+names
+M1 - M2
+M2 - M3
+M1 - N2
+M1 - O2
+N2 - N3
+O2 - O3
+$end
+
+$plot_format
+nm_vshift = 0.015
+en_vshift = 0.03 
+$end   

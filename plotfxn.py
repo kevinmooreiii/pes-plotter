@@ -2,52 +2,118 @@ from __future__ import division
 import numpy as np
 from matplotlib import pyplot as plt
 import pyparsing
+from specs import Input
+from specs import Molecule
+from specs import PlotParameter
+from specs import OutFileParameter
 
-def format_axes(y_top, y_bot, x_rgt, y_axis_label):
-    """ Format the x- and y-axes. Default scaling factors defined in llama.py are used, unless user specifies a value in the input file. """
-    print 'Formmatting the axes of the plot...\n\n'
+
+def format_axes():
+    """ Format the x- and y-axes. Default scaling factors defined in llama.py are used, unless user specifies a
+        value in the input file.
+    """
+
     plt.axes(frameon=False)
-    plt.axvline(0, y_bot, y_top, color='k')
+    plt.axvline(0, PlotParameter.y_axis_bot_lim, PlotParameter.y_axis_top_lim, color='k')
     plt.tick_params(which='both', bottom='off', top='off', right='off', labelbottom='off')
-    plt.xlim(0, x_rgt)
-    plt.ylim(y_bot, y_top)
-    plt.ylabel(y_axis_label)
+    plt.xlim(0, PlotParameter.x_axis_right_lim)
+    plt.ylim(PlotParameter.y_axis_bot_lim, PlotParameter.y_axis_top_lim)
+    plt.ylabel(PlotParameter.y_axis_label)
 
 
-def generate_xcoords(gr_count, sp_lin_len, sp_lin_spc, ex_rel):
-    """ Generates a list of the coordinates for the left and right endpoints of each of the horizontal lines corresponding to a molecular species. """
-    lft_endpt = []
-    rgt_endpt = []
-    for i in range(0, gr_count):
-        lft_endpt.append(sp_lin_spc * i + 0.25)
-        rgt_endpt.append(sp_lin_spc * i + 0.25 + sp_lin_len)
+def generate_xcoords():
+    """ Generates a list of the coordinates for the left and right endpoints of each of the horizontal lines
+        corresponding to a molecular species.
+    """
 
-    for i in range(0, len(ex_rel)):
-        lft_endpt.append(lft_endpt[ex_rel[i] - 1])
-        rgt_endpt.append(rgt_endpt[ex_rel[i] - 1])
+    for i in range(0, Molecule.ground_species_count):
+        tmp1 = (PlotParameter.species_line_spacing * i) + 0.25
+        tmp2 = tmp1 + PlotParameter.species_line_length
+        Molecule.left_endpt.append(tmp1)
+        Molecule.right_endpt.append(tmp2)
 
-    return (lft_endpt, rgt_endpt)
+    for i in range(0, Molecule.excited_species_count):
+        tmp1 = Molecule.left_endpt[Molecule.excited_state[i] - 1]
+        tmp2 = Molecule.right_endpt.append[Molecule.excited_state[i] - 1]
+        Molecule.left_endpt.append(tmp1)
+        Molecule.right_endpt.append(tmp2)
+
+    return None
 
 
-def plt_spec_lines(spc_count, lft_connect, rgt_connect, lft_endpt, rgt_endpt, energy, sp_lin_clr, sp_lin_wid, en_shift, en_fsize, nm_shift, name, nm_fsize):
+def plt_spec_lines():
     """ Plot the lines that correspond to the molecular species. """
-    print 'Plotting ground state species lines for surface...\n\n'
-    for i in range(0, spc_count):
-        plt.plot([lft_endpt[i], rgt_endpt[i]], [energy[i], energy[i]], color=sp_lin_clr, lw=sp_lin_wid, linestyle='-')
-        plt.text((rgt_endpt[i] + lft_endpt[i]) / 2, energy[i] - en_shift, energy[i], horizontalalignment='center', fontsize=en_fsize)
-        plt.text((rgt_endpt[i] + lft_endpt[i]) / 2, energy[i] + nm_shift, name[i], weight='bold', horizontalalignment='center', fontsize=nm_fsize)
+
+    for i in range(0, Molecule.species_count):
+
+        mid_line = (Molecule.right_endpt[i] + Molecule.left_endpt[i]) / 2
+        shift1 = Molecule.energy[i] - PlotParameter.energy_vshift
+        shift2 = Molecule.energy[i] + PlotParameter.name_vshift
+
+        plt.plot([Molecule.left_endpt[i], Molecule.right_endpt[i]], [Molecule.energy[i], Molecule.energy[i]],
+                    color=PlotParameter.species_line_color, lw=PlotParameter.species_line_width, linestyle='-')
+        plt.text(mid_line, shift1, Molecule.energy[i], weight = 'bold', horizontalalignment='center',
+                    fontsize=PlotParameter.energy_font_size)
+        plt.text(mid_line, shift2, Molecule.name[i], weight='bold', horizontalalignment='center',
+                    fontsize=PlotParameter.name_font_size)
 
 
-def plt_connecting_lines(con_cnt, lft_connect, rgt_connect, lft_endpt, rgt_endpt, energy, cn_lin_clr, cn_lin_wid):
-    """ Plot the lines that connect the species lines showing establishing a relationship of two molecular species in a reaction mechanism. """
-    print 'Plotting connecting lines for surface...\n\n'
-    for i in range(0, con_cnt):
-        plt.plot([rgt_endpt[lft_connect[i] - 1], lft_endpt[rgt_connect[i] - 1]], [energy[lft_connect[i] - 1], energy[rgt_connect[i] - 1]], color=cn_lin_clr, lw=cn_lin_wid, linestyle='--')
+def plt_connecting_lines():
+    """ Plot the lines that connect the species lines showing establishing a relationship of two molecular species
+        in a reaction mechanism.
+    """
 
+    for i in range(0, Molecule.connection_count):
 
-def create_pdf(pdf_width, pdf_height, pdf_name, pdf_dpi):
-    print 'Creating pdf of potential energy surface plot...\n\n'
+        tmp1 = Molecule.right_endpt[Molecule.left_connection[i] - 1]
+        tmp2 = Molecule.left_endpt[Molecule.right_connection[i] - 1]
+        tmp3 = Molecule.energy[Molecule.left_connection[i] - 1]
+        tmp4 = Molecule.energy[Molecule.right_connection[i] - 1]
+
+        plt.plot([tmp1, tmp2], [tmp3, tmp4], color=PlotParameter.connection_line_color,
+                    lw=PlotParameter.connection_line_width, linestyle='--')
+
+    return None
+
+def create_pdf():
+    """ Creates the outgoing plot in the format requested by the user. """
+
     fig = plt.gcf()
-    fig.set_size_inches(pdf_width, pdf_height)
-    fig.savefig(pdf_name, dpi=pdf_dpi)
+    fig.set_size_inches(OutFileParameter.width, OutFileParameter.height)
+    fig.savefig(OutFileParameter.name, dpi=OutFileParameter.dpi)
+    #plt.show()
+
+    return None
+
+
+def print_outgoing_msg():
+    """ Prints a message which signals successful completion of program as well as program information. """
+
+    print("""
+      A LOVELY little potential energy surface has been successfully generated by the
+      Lim, Launder, and Moore auto-plotter (LLAMA) vers. 0.3!
+
+      ############################################################################### 
+         LLAMA 0.3 written By:
+         [a] Andrew Launder and Kevin Moore
+             Center for Computational Quantum Chemistry, 
+             Dept. of Chemistry, Univ. of Georgia, Athens, GA, United States
+         [b] Victoria Lim
+             Dept. of Chemistry, Belmont University, Nashville, TN, United States
+      ###############################################################################
+
+      Thank you for very much for plotting with us today! Please do so again soon!
+          """)
+
+    return None
+
+### Funcion that needs to be added into the program ###
+
+#def plot_gr_state_images():
+#  """ Upload images for each species and place them in plot above corresponding species line. Current memory issues restrict this function to the plotting of only 3-5 images. """  
+      #img = plt.imread(IMNAME[i])
+      #plt.imshow(img, aspect = 'auto', extent = (x1[i],x2[i],Energy[i],Energy[i] + text_vert_shift * 3))
+
+#  return None
+
 

@@ -80,7 +80,7 @@ def create_pdf():
 
     fig = plt.gcf()
     fig.set_size_inches(OutFileParameter.width, OutFileParameter.height)
-    fig.savefig(OutFileParameter.name, dpi=OutFileParameter.dpi)
+    fig.savefig(OutFileParameter.name + '.' + OutFileParameter.ext, dpi=OutFileParameter.dpi)
     #plt.show()
 
     return None

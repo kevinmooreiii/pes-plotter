@@ -167,8 +167,8 @@ def plot_format_processor(section_start):
                     PlotParameter.connection_line_width = float(tmp[2])
                 if 'latex_text = on' in tmp[0]:
                     PlotParameter.name_latex_format = 'on'
-                #else:
-                #    print("improper formatting of plot section")
+                    # else:
+                    # print("improper formatting of plot section")
 
     return None
 

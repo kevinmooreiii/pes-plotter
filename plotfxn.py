@@ -45,17 +45,16 @@ def plt_spec_lines():
     """ Plot the lines that correspond to the molecular species. """
 
     for i in range(0, Molecule.species_count):
-
         mid_line = (Molecule.right_endpt[i] + Molecule.left_endpt[i]) / 2
         shift1 = Molecule.energy[i] - PlotParameter.energy_vshift
         shift2 = Molecule.energy[i] + PlotParameter.name_vshift
 
         plt.plot([Molecule.left_endpt[i], Molecule.right_endpt[i]], [Molecule.energy[i], Molecule.energy[i]],
-                    color=PlotParameter.species_line_color, lw=PlotParameter.species_line_width, linestyle='-')
-        plt.text(mid_line, shift1, Molecule.energy[i], weight = 'bold', horizontalalignment='center',
-                    fontsize=PlotParameter.energy_font_size)
+                 color=PlotParameter.species_line_color, lw=PlotParameter.species_line_width, linestyle='-')
+        plt.text(mid_line, shift1, Molecule.energy[i], weight='bold', horizontalalignment='center',
+                 fontsize=PlotParameter.energy_font_size)
         plt.text(mid_line, shift2, Molecule.name[i], weight='bold', horizontalalignment='center',
-                    fontsize=PlotParameter.name_font_size)
+                 fontsize=PlotParameter.name_font_size)
 
 
 def plt_connecting_lines():
@@ -64,16 +63,16 @@ def plt_connecting_lines():
     """
 
     for i in range(0, Molecule.connection_count):
-
         tmp1 = Molecule.right_endpt[Molecule.left_connection[i] - 1]
         tmp2 = Molecule.left_endpt[Molecule.right_connection[i] - 1]
         tmp3 = Molecule.energy[Molecule.left_connection[i] - 1]
         tmp4 = Molecule.energy[Molecule.right_connection[i] - 1]
 
         plt.plot([tmp1, tmp2], [tmp3, tmp4], color=PlotParameter.connection_line_color,
-                    lw=PlotParameter.connection_line_width, linestyle='--')
+                 lw=PlotParameter.connection_line_width, linestyle='--')
 
     return None
+
 
 def create_pdf():
     """ Creates the outgoing plot in the format requested by the user. """
@@ -81,7 +80,7 @@ def create_pdf():
     fig = plt.gcf()
     fig.set_size_inches(OutFileParameter.width, OutFileParameter.height)
     fig.savefig(OutFileParameter.name + '.' + OutFileParameter.ext, dpi=OutFileParameter.dpi)
-    #plt.show()
+    # plt.show()
 
     return None
 
@@ -109,10 +108,10 @@ def print_outgoing_msg():
 
 ### Funcion that needs to be added into the program ###
 
-#def plot_gr_state_images():
+# def plot_gr_state_images():
 #  """ Upload images for each species and place them in plot above corresponding species line. Current memory issues restrict this function to the plotting of only 3-5 images. """  
-      #img = plt.imread(IMNAME[i])
-      #plt.imshow(img, aspect = 'auto', extent = (x1[i],x2[i],Energy[i],Energy[i] + text_vert_shift * 3))
+#img = plt.imread(IMNAME[i])
+#plt.imshow(img, aspect = 'auto', extent = (x1[i],x2[i],Energy[i],Energy[i] + text_vert_shift * 3))
 
 #  return None
 

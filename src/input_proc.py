@@ -15,7 +15,7 @@ def input_processor():
     parser = argparse.ArgumentParser(description="Produces a plot of a computed potential energy surface.")
 
     parser.add_argument('-i', '--input', type=str, default='input.dat', help="Name of the input file to be read in")
-    parser.add_argument('-o', '--output', type=str, default='output.dat', help="Name of the output file to be created.")
+    parser.add_argument('-o', '--output', type=str, default='pes.pdf', help="Name of the output file to be created.")
 
     args = parser.parse_args()
 

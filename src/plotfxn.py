@@ -34,7 +34,7 @@ def generate_xcoords():
 
     for i in range(0, Molecule.excited_species_count):
         tmp1 = Molecule.left_endpt[Molecule.excited_state[i] - 1]
-        tmp2 = Molecule.right_endpt.append[Molecule.excited_state[i] - 1]
+        tmp2 = Molecule.right_endpt[Molecule.excited_state[i] - 1]
         Molecule.left_endpt.append(tmp1)
         Molecule.right_endpt.append(tmp2)
 
@@ -79,7 +79,7 @@ def create_pdf():
 
     fig = plt.gcf()
     fig.set_size_inches(OutFileParameter.width, OutFileParameter.height)
-    fig.savefig(OutFileParameter.name + '.' + OutFileParameter.ext, dpi=OutFileParameter.dpi)
+    fig.savefig(Input.output_file_name, dpi=OutFileParameter.dpi)
     # plt.show()
 
     return None

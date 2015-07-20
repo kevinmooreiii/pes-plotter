@@ -76,8 +76,8 @@ class PlotParameter:
 class OutFileParameter:
     """ Variables specify what the format of the output file that is generated. """
 
-    ext = 'pdf'
-    name = 'pes'
+    #ext = 'pdf'
+    #name = 'pes'
     width = 16
     height = 9
     dpi = 1000

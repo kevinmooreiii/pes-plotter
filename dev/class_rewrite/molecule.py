@@ -16,12 +16,6 @@ class Molecule(object):
     #self.textvert = textvert
     #self.textfontsize = textfontsize    
 
-    
-  def print_linecolor(self):
-    print(self.linecolor)
-
-  def get_name(self):
-    return self.name
 
    @staticmethod
    def generate_xcoords():

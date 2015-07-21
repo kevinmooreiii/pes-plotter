@@ -1,106 +1,129 @@
 import argparse
 
-class Input_Processor():
-""" Handles the input of the input file. """
+class Input_Processor(object):
+  """ Class of methods to: (1) accept command line arguments from the user,
+                           (2) read the input file, and
+                           (3) Store all the information in variables to pass to other classes. """
 
-  # List to hold all the lines we will loop through to pull out additional info.
-  infile_lines = []
-  # Dictionary to hold the beginning and ending line numbers of a section
-  sections = {}
-  #    'molecules':  [],
-  #    'connections: [],
-  #    'options':    []
-  #}
+  # Class variables that are passed to other class methods in the program
+  infile_name = ''      # Name of the input file
+  outfile_name = ''     # Name of the output file
+
+  molecule_lines = []   # List to hold all the lines from the molecule section
+  connector_lines = []  # List to hold all the lines from the connector section
+  options_lines = []    # List to hold all the lines from the options section
+
 
   def __init__(self):
     """ No objects will be used, so the __init__ function does not need to do anything. """
     pass
 
-  @staticmethod
-  def cmdline_parser():
+
+  @classmethod
+  def cmdline_parser(cls):
     """ Function uses the argparse module to take in options the user specifies on the command line. """
 
+    # Add arguments that user can specify and put info you can discuss what each options are 
     parser = argparse.ArgumentParser(description="Produces a plot of a computed potential energy surface.")
-
     parser.add_argument('-i', '--input', type=str, default='input.dat', help="Name of the input file to be read in")
     parser.add_argument('-o', '--output', type=str, default='pes.pdf', help="Name of the output file to be created.")
 
+    # Store all the arguments from argparse into class variabes
     args = parser.parse_args()
+    cls.infile_name = args.input
+    cls.outfile_name = args.output
 
-    Input.input_file_name = args.input
-    Input.output_file_name = args.output
-
-    return None
+    return None 
 
 
+  @classmethod
+  def input_file_parser(cls):
+    """ Opens the input file and stores each of the lines of each section into """
+ 
+    # Loop through the file and store lines in an appropriate list that is passed to other class functions
+    with open(cls.infile_name,'r') as infile:
+      for line in infile:                     # Loop through the whole file
+        if '$molecule' in line:              # Search for a section header
+          for line in infile:                 # Enter second loop over the lines in the section
+            if '$end' in line:                # If you find $end, stop loop as the section is finished
+              break
+            else:                             # Otherwise add the line to a list
+              cls.molecule_lines.append(line.strip())
+        if '$connection' in line:            # Continue for other sections...
+          for line in infile:
+            if '$end' in line:
+              break
+            else:
+              cls.connector_lines.append(line.strip())
+        if '$options' in line:                # Continue for other sections...
+          for line in infile:
+            if '$end' in line:
+              break
+            else:
+              cls.options_lines.append(line.strip())
+   
   @staticmethod
-  def read_input_file():
-    """ Open the input file and parse the info. """
-     
-    with open(, 'r') as infile:
-        infile_lines = infile.readlines()
-
-    return infile_lines 
-
-
+  def input_file_parser2(infile_name):
+    """ Opens the input file and stores each of the lines of each section into """
+ 
+    # Loop through the file and store lines in an appropriate list that is passed to other class functions
+    with open(infile_name,'r') as infile:
+      for line in infile:                     # Loop through the whole file
+        if '$molecule' in line:              # Search for a section header
+          for line in infile:                 # Enter second loop over the lines in the section
+            if '$end' in line:                # If you find $end, stop loop as the section is finished
+              break
+            else:                             # Otherwise add the line to a list
+              molecule_lines.append(line.strip())
+        if '$connection' in line:            # Continue for other sections...
+          for line in infile:
+            if '$end' in line:
+              break
+            else:
+              connector_lines.append(line.strip())
+        if '$options' in line:                # Continue for other sections...
+          for line in infile:
+            if '$end' in line:
+              break
+            else:
+              options_lines.append(line.strip())
+   
   @staticmethod
-  def input_file_parser():
-    """ Figures out what sections are in the input file and figures out where they begin and end. """
-      
-    for i in range(len(infile_lines)):
-      if '$molecules' in infile_lines[i]: 
-        sections['molecules'].append(i)
-        for j in range(i, infile_lines)):
-          if '$end' in infile_lines[j]:
-            sections['molecules'].append(j)
-            break
-        molecule_section_parser(
-      elif '$connections' in infile_lines[i]: 
-        sections['connections'].append(i)
-        for j in range(i, infile_lines)):
-          if '$end' in infile_lines[j]:
-            sections['connections'].append(j)
-            break
-      elif '$options' in infile_lines[i]: 
-        sections['options'].append(i)
-        for j in range(i, infile_lines)):
-          if '$end' in infile_lines[j]:
-            sections['connections'].append(j)
-            break
+  def checker(molecule_lines, connector_lines, options_lines):
+    """ Check the status of the function. """
+    
+    for i in range(len(molecule_lines)):
+      print(molecule_lines[i])
+  
+    print('\n\n')
+  
+    for i in range(len(connector_lines)):
+      print(connector_lines[i])
 
-    return None
+    print('\n\n')
 
-    @staticmethod
-    def molecule_section_parser(sec_start, sec_end):
-      """ Reads through the molecule section and stores all the appropriate information as molecule objects. """
+    for i in range(len(options_lines)):
+      print(options_lines[i])
 
-      a = []
-      for i in range(sec_start, sec_end):
-        a.append(infile_lines[i].strip().split())
-        
-      return a
+    print('\n\n')
+  @staticmethod
+  def checker(molecule_lines, connector_lines, options_lines):
+    """ Check the status of the function. """
+    
+    for i in range(len(molecule_lines)):
+      print(molecule_lines[i])
+  
+    print('\n\n')
+  
+    for i in range(len(connector_lines)):
+      print(connector_lines[i])
 
-    @staticmethod
-    def connection_section_parser(sec_start, sec_end):
-      """ Reads through the connection section and stores all the appropriate information as connector objects. """
-     
-      a = []
-      for i in range(sec_start, sec_end):
-        a.append(infile_lines[i].strip().split())
-        
-      return a
+    print('\n\n')
 
-    @staticmethod
-    def options_section_parser(sec_start, sec_end):
-      """ Reads through the options section and stores all the appropriate information as a list. """
-     
-      a = []
-      for i in range(sec_start, sec_end):
-        a.append(infile_lines[i].strip().split())
-        
-      return a
+    for i in range(len(options_lines)):
+      print(options_lines[i])
 
+    print('\n\n')
 
-
-
-
+    return None  
+ 

@@ -49,9 +49,11 @@ def plt_spec_lines():
         shift1 = Molecule.energy[i] - PlotParameter.energy_vshift
         shift2 = Molecule.energy[i] + PlotParameter.name_vshift
 
+        en = '{0:5.2f}'.format(Molecule.energy[i])
+
         plt.plot([Molecule.left_endpt[i], Molecule.right_endpt[i]], [Molecule.energy[i], Molecule.energy[i]],
                  color=PlotParameter.species_line_color, lw=PlotParameter.species_line_width, linestyle='-')
-        plt.text(mid_line, shift1, Molecule.energy[i], weight='bold', horizontalalignment='center',
+        plt.text(mid_line, shift1, en, weight='bold', horizontalalignment='center',
                  fontsize=PlotParameter.energy_font_size)
         plt.text(mid_line, shift2, Molecule.name[i], weight='bold', horizontalalignment='center',
                  fontsize=PlotParameter.name_font_size)

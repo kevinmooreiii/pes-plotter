@@ -1,26 +1,38 @@
 from input_processor import Input_Processor
 from molecule import Molecule
-#import connector
-#import plotter
+#from connector import Connector
+#from plotter import ThePlot
  
-# Process the input file
+# Create an Input Processor object 
 proc = Input_Processor()
+
+# Use the Input Processor to parse the input file
 proc.cmdline_parser()
 proc.input_file_parser()
 
-#molec.generate_xcoord()
+# Create all of the molecule onjects; all stored in dictionary in Molecule class
+Molecule.make_molecule(Input_Processor.molecule_lines, Molecule.molec_dict)
+# Compute values needed for plotting
+Molecule.energy_lim(Molecule._energy_list)
+# Compute and then change program neccessary attributes of each molecule 
 
-for i in range(len(Input_Processor.molecule_lines)):
-  tmp = Input_Processor.molecule_lines[i].strip().split()
-  Molecule.molec_dict[tmp[0]] = Molecule( (i+1), tmp[0], tmp[2])
-Molecule.print_dict(Molecule.molec_dict)
+# Change any attributes that are requested by the user
 
-# Create the molecule objects needed for the plot
-#molec.make_molecules()
 
-# Create the connector objects needed for the plot
-#connect.make_connectors()
+# Loop through the molecule lines and generate each of the connector objects; store in dictionary
+#for i in range(len(Input_Processor.connector_lines)):
+#  tmp = Input_Processor.molecule_lines[i].strip().split()
+#  Connector.connect_dict[] = Connecter()
+
+# Augment all of the molecule and connector objects to the users specifications
+# Some function....
 
 # Create the plot object
-#plotter.make_plot()
+#plotter.gen_plot_axes()
 
+# Place all the objects onto the plot object
+#plotter.plt_molecule_lines()
+#plotter.plt_connector_lines()
+
+# Create the total plot that has been created
+#plotter.create_pdf()

@@ -5,7 +5,6 @@ class Input_Processor(object):
                            (2) read the input file, and
                            (3) Store all the information in variables to pass to other classes. """
 
-  # Class variables that are passed to other class methods in the program
   infile_name = ''      # Name of the input file
   outfile_name = ''     # Name of the output file
 
@@ -61,32 +60,3 @@ class Input_Processor(object):
               break
             else:
               cls.options_lines.append(line.strip())
-   
-  @staticmethod
-  def checker(molecule_lines, connector_lines, options_lines):
-    """ Check the status of the function. """
-    
-    for i in range(len(molecule_lines)):
-      print(molecule_lines[i])
-  
-    print('\n\n')
-  
-    for i in range(len(connector_lines)):
-      print(connector_lines[i])
-
-    print('\n\n')
-
-    for i in range(len(options_lines)):
-      print(options_lines[i])
-
-    print('\n\n')
-
-  #def make_molecules(molecule_lines, Molecule.molec_dict):
-  #  ''' '''
-
-  #  for i in range(len(molecule_lines)):
-  #    tmp = molecule_lines[i].strip().split()
-  #    Molecule.molec_dict[tmp[0]] = Molecule( (i+1), tmp[0], tmp[2])
- 
-  #  return None
-

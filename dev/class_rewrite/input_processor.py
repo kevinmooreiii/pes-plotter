@@ -63,50 +63,6 @@ class Input_Processor(object):
               cls.options_lines.append(line.strip())
    
   @staticmethod
-  def input_file_parser2(infile_name):
-    """ Opens the input file and stores each of the lines of each section into """
- 
-    # Loop through the file and store lines in an appropriate list that is passed to other class functions
-    with open(infile_name,'r') as infile:
-      for line in infile:                     # Loop through the whole file
-        if '$molecule' in line:              # Search for a section header
-          for line in infile:                 # Enter second loop over the lines in the section
-            if '$end' in line:                # If you find $end, stop loop as the section is finished
-              break
-            else:                             # Otherwise add the line to a list
-              molecule_lines.append(line.strip())
-        if '$connection' in line:            # Continue for other sections...
-          for line in infile:
-            if '$end' in line:
-              break
-            else:
-              connector_lines.append(line.strip())
-        if '$options' in line:                # Continue for other sections...
-          for line in infile:
-            if '$end' in line:
-              break
-            else:
-              options_lines.append(line.strip())
-   
-  @staticmethod
-  def checker(molecule_lines, connector_lines, options_lines):
-    """ Check the status of the function. """
-    
-    for i in range(len(molecule_lines)):
-      print(molecule_lines[i])
-  
-    print('\n\n')
-  
-    for i in range(len(connector_lines)):
-      print(connector_lines[i])
-
-    print('\n\n')
-
-    for i in range(len(options_lines)):
-      print(options_lines[i])
-
-    print('\n\n')
-  @staticmethod
   def checker(molecule_lines, connector_lines, options_lines):
     """ Check the status of the function. """
     
@@ -125,5 +81,12 @@ class Input_Processor(object):
 
     print('\n\n')
 
-    return None  
+  #def make_molecules(molecule_lines, Molecule.molec_dict):
+  #  ''' '''
+
+  #  for i in range(len(molecule_lines)):
+  #    tmp = molecule_lines[i].strip().split()
+  #    Molecule.molec_dict[tmp[0]] = Molecule( (i+1), tmp[0], tmp[2])
  
+  #  return None
+

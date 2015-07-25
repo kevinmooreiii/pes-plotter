@@ -1,7 +1,34 @@
 class ThePlot:
     """ Handles options of the entire plot created, not specific to a single molecule. """
+    
+    # Parameters for axes set-up
+    y_axis_top_lim = 0
+    y_axis_bot_lim = 0
+    y_axis_top_extend = 2.5
+    y_axis_bot_extend = 2.5
+    x_axis_right_lim = 0
+    x_axis_right_extend = 0.75
+
+    # Parameters for name and energy labels
+    name_vshift = 0
+    name_vshift_scale_fact = 0.04
+    energy_vshift = 0
+    energy_vshift_scale_fact = 0.04
 
     def __init__(self):
+      self.plot_name = pes.pdf
+      self.width = 16
+      self.height = 9
+      self.dpi = 1000   
+      self.x_axis_name = 
+      self.x_axis_spacing = 1.00
+      self.x_axis_min = 0.0
+      self.x_axis_max = 'Reaction Coordinate'
+      self.y_axis_name = 'Relative Energy (kcal/mol)'
+      self.y_axis_min =
+      self.y_axis_max =
+
+
 
     @staticmethod
     def y_axis_maximum(self):

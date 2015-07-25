@@ -7,10 +7,15 @@ from molecule import Molecule
 proc = Input_Processor()
 proc.cmdline_parser()
 proc.input_file_parser()
-#proc.checker(proc.molecule_lines, proc.connector_lines, proc.options_lines)
+
+#molec.generate_xcoord()
+
+for i in range(len(Input_Processor.molecule_lines)):
+  tmp = Input_Processor.molecule_lines[i].strip().split()
+  Molecule.molec_dict[tmp[0]] = Molecule( (i+1), tmp[0], tmp[2])
+Molecule.print_dict(Molecule.molec_dict)
 
 # Create the molecule objects needed for the plot
-#molec.generate_xcoord()
 #molec.make_molecules()
 
 # Create the connector objects needed for the plot

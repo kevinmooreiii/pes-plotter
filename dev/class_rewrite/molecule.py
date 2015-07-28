@@ -24,7 +24,7 @@ class Molecule(object):
   min_energy = 0.0  # Minimum energy of the molecule
   max_energy = 0.0  # Maximum energy of the molecule
 
-  line_separation = 1.0   # Sets the amount of space between each of the molecule lines
+  line_seperation = 1.0   # Sets the amount of space between each of the molecule lines
   axis_offset = 0.25      # Offsets the positions from y = 0.
 
   def __init__(self, position, name, energy):
@@ -34,14 +34,14 @@ class Molecule(object):
     self.exited = [False, 0]
     self.linecolor = 'black'
     self.linewidth = 5
-    self.linethickness = 4
-    self.x1, self.x2 = self.generate_xcoords(line_separation, axis_offset, self.position, self.linethickness) 
+    self.linethickness = 0.5
+    self.x1, self.x2 = self.generate_xcoords(type(self).line_seperation, type(self).axis_offset, self.position, self.linethickness) 
     self.name_font_size = 10
     self.name_vert_scale = 0.04
     self.energy_font_size = 10
     self.energy_vert_scale = 0.04
     type(self).molec_dict[self.name] = self
-    type(self)._energy_list.append(self.energy)
+    type(self).energy_list.append(float(self.energy))
 
 
   ##### First set of functions helps generate the molecules with default parameters ######
@@ -60,11 +60,19 @@ class Molecule(object):
     return None
 
 
-  def generate_xcoords(self, line_separation, axis_offset, position, linethickness):
+  def generate_xcoords(self, line_seperation, axis_offset, position, linethickness):
     """ Computes the left and right endpoint x-coordinates of each molecule. """ 
 
     x1 = (line_seperation * position) + axis_offset
     x2 = x1 + linethickness
+    
+    #print('line_seperation is {0}'.format(line_seperation))
+    #print('position is {0}'.format(position))
+    #print('axis_offset is {0}'.format(axis_offset))
+    #print('linethickness is {0}'.format(linethickness))
+    #print('x1 is {0}'.format(x1))
+    #print('x2 is {0}'.format(x2))
+    #print('\n\n')
 
     return x1, x2
 
@@ -76,7 +84,15 @@ class Molecule(object):
     max_energy = max(energy_list)
     min_energy = min(energy_list)
     
-    return None
+    return max_energy, min_energy
+
+  @staticmethod
+  def get_count(energy_list):
+    """ Figure out how many ground state and excited state molecules there are. """
+
+    count = len(energy_list)
+
+    return count
 
   #######################################################################################
 
@@ -86,7 +102,7 @@ class Molecule(object):
   def get_name(self):
     return self.name
   
-  @staticmethods
+  @staticmethod
   def alter_molec_with_plot_specs(self, molecoptions_lines):
     """ User may specify changes to default molecules. 
         Input set-up:
@@ -127,7 +143,7 @@ class Molecule(object):
   def calc_midpoint(self, x1, x2):
       """ Names of molecules are specified over the middle of the line. This function computes the midpoint for this. """
 
-      midpoint = (x2 - x1) / 2
+      midpoint = ( (x2 + x1) / 2 ) 
 
       return midpoint
 
@@ -135,7 +151,7 @@ class Molecule(object):
   def vert_shift_name(self, min_energy, max_energy):
       """ Calculate how far below the molecule line the name will be shown. """
 
-      name_position = name_vert_scale * (max_energy - min_energy)
+      name_position = float(self.energy) - self.name_vert_scale * (max_energy - min_energy)
 
       return name_position
 
@@ -143,7 +159,7 @@ class Molecule(object):
   def vert_shift_energy(self, min_energy, max_energy):
       """ Calculate how far above the molecule line the energy will be shown. """
 
-      energy_position = energy_vert_scale * (max_energy - min_energy) 
+      energy_position = float(self.energy) + self.energy_vert_scale * (max_energy - min_energy) 
 
       return energy_position
 

@@ -5,39 +5,43 @@
 """
 
 from molecule import Molecule
+import matplotlib.pyplot as plt
 
 class ThePlot:
     """ Handles options of the entire plot created, not specific to a single molecule. """
 
-    def __init__(self):
-      self.plot_name = pes.pdf
+    def __init__(self, num_ground, min_energy, max_energy):
+      self.name = 'pes.pdf'
       self.width = 16
       self.height = 9
       self.dpi = 1000   
       #self.x_axis_label = 'Reaction Coordinate' # Not used 
       self.x_axis_spacing = 1.00
-      self.x_axis_extension = 0.75
+      self.x_axis_extension = 1.5
       self.x_axis_min = 0.0
-      self.x_axis_max = set_x_axis_limits() 
+      self.x_axis_min, self.x_axis_max = self.set_x_axis_limits(num_ground) 
       self.y_axis_label = 'Relative Energy (kcal/mol)'
       self.y_axis_min_extension = 2.5
       self.y_axis_max_extension = 2.5
-      self.y_axis_min, self.y_axis_max = set_y_axis_limits()
+      self.y_axis_min, self.y_axis_max = self.set_y_axis_limits(min_energy, max_energy)
 
-    def set_x_axis_limits(self, num_species_ground):
+    def set_x_axis_limits(self, num_ground):
       """ Determine the maximum of the y limits. """
 
       x_axis_min = 0
-      x_axis_max = num_species_ground - x_axis_max_extension
+      x_axis_max = num_ground + self.x_axis_extension
 
       return x_axis_min, x_axis_max
     
 
-    def set_y_axis_limits(self):
+    def set_y_axis_limits(self, min_energy, max_energy):
       """ Determine the maximum of the y limits. """
 
-      y_axis_min = min_energy - y_axis_min_extension
-      y_axis_max = max_energy - y_axis_max_extension
+      min_energy = -10
+      max_energy = 10
+
+      y_axis_min = min_energy - self.y_axis_min_extension
+      y_axis_max = max_energy + self.y_axis_max_extension
 
       return y_axis_min, y_axis_max
 
@@ -54,24 +58,23 @@ class ThePlot:
 
         return None
 
-    def plt_spec_lines(self, molec_dict):
+    def plt_molecule_lines(self, molec_dict, min_energy, max_energy):
         """ Plot the lines that correspond to the molecular species. """
-    
+   
         # Loop thorugh the molecule dictionary
         for molecule_name, molecule in molec_dict.items():      
-            mid_point = Molecule.calc_midpoint(molecule.x1, molecule.x2)
-            name_shift = Molecule.vert_shift_name(molecule.name_shift)
-            energy_shift = Molecule.vert_shift_energy(molecule.energy_shift)
-    
-            plt.plot([Molecule.left_endpt[i], Molecule.right_endpt[i]], [Molecule.energy[i], Molecule.energy[i]],
-                     color=PlotParameter.species_line_color, lw=PlotParameter.species_line_width, linestyle='-')
-            plt.text(mid_line, shift1, Molecule.energy[i], weight='bold', horizontalalignment='center',
-                     fontsize=PlotParameter.energy_font_size)
-            plt.text(mid_line, shift2, Molecule.name[i], weight='bold', horizontalalignment='center',
-                     fontsize=PlotParameter.name_font_size)
-    
-    
-    def plt_connector_lines():
+            mid_line = molecule.calc_midpoint(molecule.x1, molecule.x2)
+            energy_shift = molecule.vert_shift_energy(min_energy, max_energy)
+            name_shift = molecule.vert_shift_name(min_energy, max_energy)
+
+            plt.plot([molecule.x1, molecule.x2], [molecule.energy, molecule.energy],
+                     color=molecule.linecolor, lw=molecule.linewidth, linestyle='-')
+            plt.text(mid_line, energy_shift, molecule.energy, weight='bold', horizontalalignment='center',
+                     fontsize=molecule.energy_font_size)
+            plt.text(mid_line, name_shift, molecule.name, weight='bold', horizontalalignment='center',
+                     fontsize=molecule.name_font_size)
+
+    def plt_connector_lines(molec_dict):
         """ Plot the lines that connect the species lines showing establishing a relationship of two molecular species
             in a reaction mechanism.
         """
@@ -88,12 +91,12 @@ class ThePlot:
         return None
     
     
-    def create_pdf():
+    def create_pdf(self):
         """ Creates the outgoing plot in the format requested by the user. """
     
         fig = plt.gcf()
-        fig.set_size_inches(OutFileParameter.width, OutFileParameter.height)
-        fig.savefig(Input.output_file_name, dpi=OutFileParameter.dpi)
+        fig.set_size_inches(self.width, self.height)
+        fig.savefig(self.name, dpi=self.dpi)
     
         return None
 

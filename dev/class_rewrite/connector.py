@@ -5,6 +5,7 @@ class Connector(Molecule):
   connector_dict = {}
 
   def __init__(self, molec_dict, mol1, mol2):
+    self.linestyle = '--'
     self.linecolor = 'black'
     self.linewidth = 4 
     self.x1, self.x2, self.y1, self.y2 = self.get_connector_coords(molec_dict, mol1, mol2)

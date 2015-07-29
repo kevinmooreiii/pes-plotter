@@ -3,7 +3,7 @@
   All of the parameters for the plot are stored here.
   Additionally, it handles placing all of the objects onto the plot.
 """
-
+#from input_processor import Input_Processor
 from molecule import Molecule
 import matplotlib.pyplot as plt
 
@@ -16,9 +16,7 @@ class ThePlot:
       self.height = 9
       self.dpi = 1000   
       #self.x_axis_label = 'Reaction Coordinate' # Not used 
-      self.x_axis_spacing = 1.00
       self.x_axis_extension = 1.5
-      self.x_axis_min = 0.0
       self.x_axis_min, self.x_axis_max = self.set_x_axis_limits(num_ground) 
       self.y_axis_label = 'Relative Energy (kcal/mol)'
       self.y_axis_min_extension = 2.5
@@ -28,17 +26,14 @@ class ThePlot:
     def set_x_axis_limits(self, num_ground):
       """ Determine the maximum of the y limits. """
 
-      x_axis_min = 0
-      x_axis_max = num_ground + self.x_axis_extension
+      x_axis_min = 0.0
+      x_axis_max = num_ground + self.x_axis_extension # Need to take account other spacing
 
       return x_axis_min, x_axis_max
     
 
     def set_y_axis_limits(self, min_energy, max_energy):
       """ Determine the maximum of the y limits. """
-
-      min_energy = -10
-      max_energy = 10
 
       y_axis_min = min_energy - self.y_axis_min_extension
       y_axis_max = max_energy + self.y_axis_max_extension
@@ -64,8 +59,7 @@ class ThePlot:
         # Loop thorugh the molecule dictionary
         for molecule_name, molecule in molec_dict.items():      
             mid_line = molecule.calc_midpoint(molecule.x1, molecule.x2)
-            energy_shift = molecule.vert_shift_energy(min_energy, max_energy)
-            name_shift = molecule.vert_shift_name(min_energy, max_energy)
+            energy_shift, name_shift = molecule.vert_shift_name_and_energy(min_energy, max_energy)
 
             plt.plot([molecule.x1, molecule.x2], [molecule.energy, molecule.energy],
                      color=molecule.linecolor, lw=molecule.linewidth, linestyle='-')
@@ -81,7 +75,7 @@ class ThePlot:
     
         for key, connector in connector_dict.items():      
             plt.plot([connector.x1, connector.x2], [connector.y1, connector.y2], color=connector.linecolor,
-                     lw=connector.linewidth, linestyle='--')
+                     lw=connector.linewidth, linestyle=connector.linestyle)
     
         return None
     

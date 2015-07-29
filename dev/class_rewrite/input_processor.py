@@ -60,3 +60,5 @@ class Input_Processor(object):
               break
             else:
               cls.options_lines.append(line.strip())
+
+    return None

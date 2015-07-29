@@ -2,7 +2,7 @@ $molecule
 Min1 - 0.00
 TS1 - 5.00
 Min2 - -7.50
-TS2 - 10.00
+TS2 - 10.00 - 2
 $end
 
 $connection

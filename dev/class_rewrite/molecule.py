@@ -27,15 +27,15 @@ class Molecule(object):
   line_seperation = 1.0   # Sets the amount of space between each of the molecule lines
   axis_offset = 0.25      # Offsets the positions from y = 0.
 
-  def __init__(self, position, name, energy):
+  def __init__(self, position, name, energy, surface):
     self.position = position
     self.name = name
     self.energy = energy
-    self.exited = [False, 0]
+    self.surface = surface
     self.linecolor = 'black'
     self.linewidth = 5
     self.linethickness = 0.5
-    self.x1, self.x2 = self.generate_xcoords(type(self).line_seperation, type(self).axis_offset, self.position, self.linethickness) 
+    self.x1, self.x2 = self.generate_xcoords(type(self).line_seperation, type(self).axis_offset, self.position, self.linethickness, type(self).molec_dict) 
     self.name_font_size = 10
     self.name_vert_scale = 0.04
     self.energy_font_size = 10
@@ -52,33 +52,35 @@ class Molecule(object):
 
     for i in range(len(molecule_lines)):
       tmp = molecule_lines[i].strip().split()
+      print(len(tmp))
       if len(tmp) == 3:
-        molec_dict[tmp[0]] = Molecule((i+1), tmp[0], tmp[2])
+        molec_dict[tmp[0]] = Molecule((i+1), tmp[0], tmp[2], 0)
       elif len(tmp) == 5:
-      ex_str = tmp[4]
-      #exmol = result = ''.join([i for i in s if not i.isdigit()])
-      molec_dict[tmp[0]] = Molecule((i+1), tmp[0], tmp[2])
-
-    #tmp1 = Molecule.left_endpt[Molecule.excited_state[i] - 1]
-    #tmp2 = Molecule.right_endpt[Molecule.excited_state[i] - 1]
+        ex_st_of = int(tmp[4])
+        molec_dict[tmp[0]] = Molecule((i+1), tmp[0], tmp[2], ex_st_of)
         
     return None
 
 
-  def generate_xcoords(self, line_seperation, axis_offset, position, linethickness):
+  def generate_xcoords(self, line_seperation, axis_offset, position, linethickness, molec_dict):
     """ Computes the left and right endpoint x-coordinates of each molecule. """ 
 
-    x1 = (line_seperation * position) + axis_offset
-    x2 = x1 + linethickness
-    
-    #print('line_seperation is {0}'.format(line_seperation))
-    #print('position is {0}'.format(position))
-    #print('axis_offset is {0}'.format(axis_offset))
-    #print('linethickness is {0}'.format(linethickness))
-    #print('x1 is {0}'.format(x1))
-    #print('x2 is {0}'.format(x2))
-    #print('\n\n')
+    if self.surface == 0:
+      x1 = (line_seperation * position) + axis_offset
+      x2 = x1 + linethickness
+    else:
+      x1, x2 = self.generate_excited_coords(molec_dict)   
 
+    return x1, x2
+
+  def generate_excited_coords(self, molec_dict):
+    """ Get excited coordinates. """
+
+    for key, molecule in molec_dict.items():
+      if molec_dict[key].position == self.surface:
+        x1 = molec_dict[key].x1
+        x2 = molec_dict[key].x2
+    
     return x1, x2
 
 

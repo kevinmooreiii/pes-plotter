@@ -52,6 +52,11 @@ class Molecule(object):
 
     for i in range(len(molecule_lines)):
       tmp = molecule_lines[i].strip().split()
+      if len(tmp) == 3:
+        molec_dict[tmp[0]] = Molecule((i+1), tmp[0], tmp[2])
+      elif len(tmp) == 5:
+      ex_str = tmp[4]
+      #exmol = result = ''.join([i for i in s if not i.isdigit()])
       molec_dict[tmp[0]] = Molecule((i+1), tmp[0], tmp[2])
 
     #tmp1 = Molecule.left_endpt[Molecule.excited_state[i] - 1]

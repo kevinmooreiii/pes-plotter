@@ -74,19 +74,14 @@ class ThePlot:
             plt.text(mid_line, name_shift, molecule.name, weight='bold', horizontalalignment='center',
                      fontsize=molecule.name_font_size)
 
-    def plt_connector_lines(molec_dict):
+    def plt_connector_lines(self, connector_dict):
         """ Plot the lines that connect the species lines showing establishing a relationship of two molecular species
             in a reaction mechanism.
         """
     
-        for i in range(0, Molecule.connection_count):
-            tmp1 = Molecule.right_endpt[Molecule.left_connection[i] - 1]
-            tmp2 = Molecule.left_endpt[Molecule.right_connection[i] - 1]
-            tmp3 = Molecule.energy[Molecule.left_connection[i] - 1]
-            tmp4 = Molecule.energy[Molecule.right_connection[i] - 1]
-    
-            plt.plot([tmp1, tmp2], [tmp3, tmp4], color=PlotParameter.connection_line_color,
-                     lw=PlotParameter.connection_line_width, linestyle='--')
+        for key, connector in connector_dict.items():      
+            plt.plot([connector.x1, connector.x2], [connector.y1, connector.y2], color=connector.linecolor,
+                     lw=connector.linewidth, linestyle='--')
     
         return None
     

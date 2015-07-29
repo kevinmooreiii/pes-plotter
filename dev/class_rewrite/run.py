@@ -1,6 +1,6 @@
 from input_processor import Input_Processor
 from molecule import Molecule
-#from connector import Connector
+from connector import Connector
 from plotter import ThePlot
  
 # Create an Input Processor object 
@@ -12,6 +12,7 @@ proc.input_file_parser()
 
 # Create all of the molecule onjects; all stored in dictionary in Molecule class
 Molecule.make_molecule(Input_Processor.molecule_lines, Molecule.molec_dict)
+Connector.make_connector(Input_Processor.connector_lines, Molecule.molec_dict, Connector.connector_dict)
 
 # Compute and then change program neccessary attributes of each molecule 
 
@@ -37,7 +38,7 @@ aplot.gen_plot_axes()
 
 # Place all the objects onto the plot object
 aplot.plt_molecule_lines(Molecule.molec_dict, x, y)
-#plotter.plt_connector_lines()
+aplot.plt_connector_lines(Connector.connector_dict)
 
 # Create the total plot that has been created
 aplot.create_pdf()

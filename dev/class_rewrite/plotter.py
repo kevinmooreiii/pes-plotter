@@ -10,18 +10,18 @@ import matplotlib.pyplot as plt
 class ThePlot:
     """ Handles options of the entire plot created, not specific to a single molecule. """
 
-    def __init__(self, num_ground, min_energy, max_energy):
+    def __init__(self, num_ground, max_energy, min_energy):
       self.name = 'pes.pdf'
       self.width = 16
       self.height = 9
       self.dpi = 1000   
       #self.x_axis_label = 'Reaction Coordinate' # Not used 
       self.x_axis_extension = 1.5
-      self.x_axis_min, self.x_axis_max = self.set_x_axis_limits(num_ground) 
+      self.x_axis_max, self.x_axis_min = self.set_x_axis_limits(num_ground) 
       self.y_axis_label = 'Relative Energy (kcal/mol)'
       self.y_axis_min_extension = 2.5
       self.y_axis_max_extension = 2.5
-      self.y_axis_min, self.y_axis_max = self.set_y_axis_limits(min_energy, max_energy)
+      self.y_axis_max, self.y_axis_min = self.set_y_axis_limits(max_energy, min_energy)
 
     def set_x_axis_limits(self, num_ground):
       """ Determine the maximum of the y limits. """
@@ -29,16 +29,16 @@ class ThePlot:
       x_axis_min = 0.0
       x_axis_max = num_ground + self.x_axis_extension # Need to take account other spacing
 
-      return x_axis_min, x_axis_max
+      return x_axis_max, x_axis_min
     
 
-    def set_y_axis_limits(self, min_energy, max_energy):
+    def set_y_axis_limits(self, max_energy, min_energy):
       """ Determine the maximum of the y limits. """
 
       y_axis_min = min_energy - self.y_axis_min_extension
       y_axis_max = max_energy + self.y_axis_max_extension
 
-      return y_axis_min, y_axis_max
+      return y_axis_max, y_axis_min
 
 
     def gen_plot_axes(self):

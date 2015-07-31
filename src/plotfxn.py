@@ -54,9 +54,9 @@ def plt_spec_lines():
         plt.plot([Molecule.left_endpt[i], Molecule.right_endpt[i]], [Molecule.energy[i], Molecule.energy[i]],
                  color=PlotParameter.species_line_color, lw=PlotParameter.species_line_width, linestyle='-')
         plt.text(mid_line, shift1, en, weight='bold', horizontalalignment='center',
-                 fontsize=PlotParameter.energy_font_size)
+                 fontsize=PlotParameter.energy_font_size, color='black')
         plt.text(mid_line, shift2, Molecule.name[i], weight='bold', horizontalalignment='center',
-                 fontsize=PlotParameter.name_font_size)
+                 fontsize=PlotParameter.name_font_size, color='black')
 
 
 def plt_connecting_lines():
@@ -82,7 +82,6 @@ def create_pdf():
     fig = plt.gcf()
     fig.set_size_inches(OutFileParameter.width, OutFileParameter.height)
     fig.savefig(OutFileParameter.name + '.' + OutFileParameter.ext, dpi=OutFileParameter.dpi)
-    # plt.show()
 
     return None
 

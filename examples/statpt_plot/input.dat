@@ -18,6 +18,5 @@ ytick_intvl = 5.0
 species_line_spacing = 1.15 
 species_line_length = 0.55
 species_line_width = 6.5
-connection_line_width = 1.5
 $end
 

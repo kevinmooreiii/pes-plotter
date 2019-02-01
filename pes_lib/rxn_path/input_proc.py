@@ -15,12 +15,12 @@ def input_processor():
     parser = argparse.ArgumentParser(description="Produces a plot of a computed potential energy surface.")
 
     parser.add_argument('-i', '--input', type=str, default='input.dat', help="Name of the input file to be read in")
-    parser.add_argument('-o', '--output', type=str, default='output.dat', help="Name of the output file to be created.")
+    #parser.add_argument('-o', '--output', type=str, default='output.dat', help="Name of the output file to be created.")
 
     args = parser.parse_args()
 
     Input.input_file_name = args.input
-    Input.output_file_name = args.output
+    #Input.output_file_name = args.output
 
     if not os.path.exists(Input.input_file_name):
         print("Could not locate input file: " + Input.input_file_name)
@@ -42,12 +42,8 @@ def section_finder():
             energy_processor(i)
         if '$connect' in Input.input_file_content[i]:
             connection_processor(i)
-        if '$images' in Input.input_file_content[i]:
-            image_processor(i)
-        if '$plot_format' in Input.input_file_content[i]:
+        if '$plot_options' in Input.input_file_content[i]:
             plot_format_processor(i)
-        if '$output_file' in Input.input_file_content[i]:
-            output_file_processor(i)
 
     calc_stuff()
 
@@ -62,7 +58,7 @@ def energy_processor(section_start):
         if '#' not in tmp[0]:
             if '$end' in tmp[0]:
                 break
-            elif 'excite' not in tmp:
+            elif 'above' not in tmp:
                 Molecule.species_count += 1
                 Molecule.ground_species_count += 1
                 Molecule.number.append(int(tmp[0]))
@@ -70,12 +66,11 @@ def energy_processor(section_start):
                 Molecule.energy.append(float(tmp[4]))
             else:
                 Molecule.species_count += 1
-                Molecule.excited_species_count += 1
+                Molecule.above_species_count += 1
                 Molecule.number.append(int(tmp[0]))
                 Molecule.name.append(str(tmp[2]))
                 Molecule.energy.append(float(tmp[4]))
-                Molecule.excited_state.append(int(tmp[8]))
-                Molecule.excited_surface.append(int(tmp[10]))
+                Molecule.above_state.append(int(tmp[8]))
 
     Molecule.range_energy = max(Molecule.energy) - min(Molecule.energy)
     Molecule.max_energy = max(Molecule.energy)
@@ -89,43 +84,17 @@ def connection_processor(section_start):
 
     Molecule.connection_type = Input.input_file_content[section_start + 1].lstrip().rstrip().lower()
 
-    for i in range(section_start + 2, Input.input_file_length):
-        tmp = Input.input_file_content[i].lstrip().rstrip().split()
-        if '#' not in tmp[0]:
-            if '$end' in tmp[0]:
-                break
-            else:
-                if Molecule.connection_type == 'numbers':
-                    Molecule.connection_count += 1
-                    Molecule.left_connection.append(int(tmp[0]))
-                    Molecule.right_connection.append(int(tmp[2]))
-                elif Molecule.connection_type == 'names':
-                    Molecule.connection_count += 1
-                    # if check_excite == -1: Need an excited check to know to change loops for xcited plotting
-                    for k in range(0, Molecule.species_count):
-                        if Molecule.name[k] == tmp[0]:
-                            Molecule.left_connection.append(int(Molecule.number[k]))
-                        if Molecule.name[k] == tmp[2]:
-                            Molecule.right_connection.append(int(Molecule.number[k]))
-                else:
-                    print('Connect section formatted improperly.')
-                    sys.exit()
-
-    return None
-
-
-def image_processor(section_start):
-    """ Processes information to plot out images. """
-
     for i in range(section_start + 1, Input.input_file_length):
         tmp = Input.input_file_content[i].lstrip().rstrip().split()
         if '#' not in tmp[0]:
             if '$end' in tmp[0]:
                 break
-            else:
-                # check_image = 0
-                Molecule.image_number.append(int(tmp[0]))
-                Molecule.image_name.append(str(tmp[2]))
+            Molecule.connection_count += 1
+            for k in range(0, Molecule.species_count):
+              if Molecule.name[k] == tmp[0]:
+                Molecule.left_connection.append(int(Molecule.number[k]))
+              if Molecule.name[k] == tmp[2]:
+                Molecule.right_connection.append(int(Molecule.number[k]))
 
     return None
 
@@ -150,11 +119,11 @@ def plot_format_processor(section_start):
                 if 'x_axis_label' in tmp[0]:
                     PlotParameter.x_axis_label = str(tmp[2])
                 if 'name_vshift_scale' in tmp[0]:
-                    PlotParameter.scale_fact_name_vshift = float(tmp[2])
+                    PlotParameter.name_vshift_scale_fact = float(tmp[2])
                 if 'name_font_size' in tmp[0]:
                     PlotParameter.name_font_size = int(tmp[2])
                 if 'energy_vshift_scale' in tmp[0]:
-                    PlotParameter.scale_fact_energy_vshift = float(tmp[2])
+                    PlotParameter.energy_vshift_scale_fact = float(tmp[2])
                 if 'energy_font_size' in tmp[0]:
                     PlotParameter.energy_font_size = int(tmp[2])
                 if 'species_line_spacing' in tmp[0]:
@@ -167,31 +136,12 @@ def plot_format_processor(section_start):
                     PlotParameter.connection_line_width = float(tmp[2])
                 if 'latex_text = on' in tmp[0]:
                     PlotParameter.name_latex_format = 'on'
-                    # else:
-                    # print("improper formatting of plot section")
-
-    return None
-
-
-def output_file__processor():
-    """ Processes information that formats the input file. """
-
-    for i in range(section_start + 1, Input.input_file_length):
-        tmp = Input.input_file_content[i].lstrip().rstrip().split()
-        if '#' not in tmp[0]:
-            if '$end' in tmp[0]:
-                break
-            else:
-                if 'type' in tmp[0]:
-                    OutFileParameter.type = int(tmp[2])
-                if 'name' in tmp[0]:
-                    OutFileParameter.name = str(tmp[2])
-                if 'width' in tmp[0]:
-                    OutFileParameter.width = int(tmp[2])
-                if 'height' in tmp[0]:
-                    OutFileParameter.length = int(tmp[2])
-                if 'dpi' in tmp[0]:
-                    OutFileParameter.dpi = int(tmp[2])
+                if 'ytick_min' in tmp[0]:
+                    PlotParameter.tick_min = float(tmp[2])
+                if 'ytick_max' in tmp[0]:
+                    PlotParameter.tick_max = float(tmp[2])
+                if 'ytick_intvl' in tmp[0]:
+                    PlotParameter.tick_intvl = float(tmp[2])
 
     return None
 
@@ -205,7 +155,9 @@ def calc_stuff():
     PlotParameter.y_axis_bot_lim = Molecule.min_energy - PlotParameter.y_axis_bot_extend
     PlotParameter.x_axis_right_lim = Molecule.ground_species_count + PlotParameter.x_axis_right_extend
 
+
     if PlotParameter.name_latex_format == 'on':
         for k in range(0, Molecule.species_count):
             tmp = '$' + name[k] + '$'
             name[k] = tmp
+

@@ -1,0 +1,23 @@
+$energies
+ 1 - O2NOCH2CH2O   -  0.00
+ 2 - TS            - 15.60
+ 3 - WellP         -  8.73
+ 4 - O2NOCH2_CH2O  -  9.28
+$end
+
+$connect
+O2NOCH2CH2O - TS
+TS - WellP
+WellP - O2NOCH2_CH2O  
+$end
+
+$plot_options
+ytick_min = -5.0
+ytick_max =  20.0
+ytick_intvl = 5.0
+species_line_spacing = 1.15 
+species_line_length = 0.55
+species_line_width = 6.5
+connection_line_width = 1.5
+$end
+

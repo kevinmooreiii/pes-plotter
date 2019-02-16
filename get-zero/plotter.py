@@ -106,13 +106,13 @@ for i in range(1,len(data)):
     tmp = data[i].strip().split()
     if tmp[3] != '0.000':
 #      if float(tmp[1]) >= 1.1 and float(tmp[2]) <= 150.0: 
-      if float(tmp[1]) <= 160.0: 
-        x.append(float(tmp[1]))
-        y.append(float(tmp[2]))
-        z1.append(float(tmp[3]))
-        z2.append(float(tmp[4]))
-        z3.append(float(tmp[5]))
-        r.append(float(tmp[0]))
+#      if float(tmp[1]) <= 160.0: 
+        x.append(float(tmp[0]))
+        y.append(float(tmp[1]))
+        z1.append(float(tmp[2]))
+        z2.append(float(tmp[3]))
+        z3.append(float(tmp[4]))
+#        r.append(float(tmp[0]))
 
 z2rel = []
 for i in range(len(z2)):
@@ -121,34 +121,18 @@ z3rel = []
 for i in range(len(z3)):
   z3rel.append((z3[i] - min(z3))*627.5095)
 
+
+# Build the x,y mesh
 xi = np.linspace(min(x),max(x),100)
 yi = np.linspace(min(y),max(y),100)
 xg, yg = np.meshgrid(xi,yi)
 
-xyarr = np.array( list( zip(x,y) ) ) 
-z1arr = np.array( z1 )
-z2arr = np.array( z2rel )
-z3arr = np.array( z3rel )
+# Place into arrays
+xy_arr = np.array(list(zip(x,y))) 
+z_arr = np.array(z1)
 
-
-z1g = griddata(xyarr, z1arr, (xg,yg), method='cubic')
-z2g = griddata(xyarr, z2arr, (xg,yg), method='cubic')
-z3g = griddata(xyarr, z3arr, (xg,yg), method='cubic')
-#print(xyarr.shape)
-#print(z1arr.shape)
-#print(z2arr.shape)
-#print(xi.shape)
-#print(xg.shape)
-#print(yg.shape)
-#print(z3g.shape)
-
-#for y in xg[0,:]:
-#    print(y)
-
-
-#z1i = mlab.griddata(x, y, z1, xi, yi)
-#z2i = mlab.griddata(x, y, z2rel, xi, yi)
-#z3i = mlab.griddata(x, y, z3rel, xi, yi)
+# Build the grid
+z1g = griddata(xy_arr, z_arr, (xg,yg), method='cubic')
 
 # Adjust cmap for easy visulazion of seem
 cmap = cm.get_cmap('seismic')
@@ -159,7 +143,7 @@ ncontours = 75
 
 # Set fonts
 font = {'family' : 'normal',
- #       'weight' : 'bold',
+#       'weight' : 'bold',
         'size'   : 20}
 
 matplotlib.rc('font', **font)
@@ -185,11 +169,11 @@ cbar1 = plt.colorbar(afpcolor, orientation='horizontal', shrink=0.8)
 cbar1.set_label('E(trip)-E(sing) (kcal/mol)')
 
 # Plot the triplet contoursi
-bf = fig.add_subplot(122)
-bfcontour = bf.contourf(xg, yg, z2g, ncontours, cmap='autumn')
-bfpcolor = bf.pcolor(xg, yg, z2g, cmap= 'autumn') 
-cbar2 = plt.colorbar(bfpcolor, orientation='horizontal', shrink=0.8)
-cbar2.set_label('E(trip)-E(sing) (kcal/mol)')
+#bf = fig.add_subplot(122)
+#bfcontour = bf.contourf(xg, yg, z2g, ncontours, cmap='autumn')
+#bfpcolor = bf.pcolor(xg, yg, z2g, cmap= 'autumn') 
+#cbar2 = plt.colorbar(bfpcolor, orientation='horizontal', shrink=0.8)
+#cbar2.set_label('E(trip)-E(sing) (kcal/mol)')
 
 xv = []
 yv = []
@@ -198,38 +182,35 @@ for contour in afcontour.collections:
         data = path.vertices
         xv.append(data[:,0])
         yv.append(data[:,1])
-        #print('/n/n')
         #plt.plot(data[:,0], data[:,1],
         #         color='black',  linewidth=c.get_linewidth()[0])
 
-#for val in xv[1]:
-#    print(val)
-
-#for val in np.array(x):
-#    print(val)
-
-
-# Set Estimate object
-z2_est = Estimation(np.array(x), np.array(y), np.array(z2rel))
-with open('seam_e.dat', 'w') as efile:
-    for i in range(len(xv[1])):
-        zv = z2_est.estimate(xv[1][i], yv[1][i])
-        efile.write('{0:>12.4f}   {1:>8.4f}   {2:>8.4f}\n'.format(xv[1][i], yv[1][i], zv))
-with open('trip_e.dat', 'w') as tripfile:
-    for i in range(len(x)):
-        tripfile.write('{0:>12.4f}   {1:>8.4f}   {2:>8.4f}\n'.format(x[i], y[i], z2rel[i]))
-z2_est = Estimation(np.array(x), np.array(y), np.array(r))
-with open('seam_r.dat', 'w') as efile:
-    for i in range(len(xv[1])):
-        zv = z2_est.estimate(xv[1][i], yv[1][i])
-        efile.write('{0:>12.4f}   {1:>8.4f}   {2:>8.4f}\n'.format(xv[1][i], yv[1][i], zv))
-with open('trip_r.dat', 'w') as tripfile:
-    for i in range(len(x)):
-        tripfile.write('{0:>12.4f}   {1:>8.4f}   {2:>8.4f}\n'.format(x[i], y[i], r[i]))
+# energy
+#zint = griddata(xyarr, z2arr, (xv[1],yv[1]), method='cubic')
+#with open('griddata_e', 'w') as gridfile:
+#    for i in range(len(zint)):
+#        gridfile.write('{0:>12.4f}   {1:>8.4f}   {2:>8.4f}\n'.format(xv[1][i], yv[1][i], zint[i]))
+#
+#
+## Set Estimate object
+#z2_est = Estimation(np.array(x), np.array(y), np.array(z2rel))
+#with open('seam_e.dat', 'w') as efile:
+#    for i in range(len(xv[1])):
+#        zv = z2_est.estimate(xv[1][i], yv[1][i])
+#        efile.write('{0:>12.4f}   {1:>8.4f}   {2:>8.4f}\n'.format(xv[1][i], yv[1][i], zv))
+#with open('trip_e.dat', 'w') as tripfile:
+#    for i in range(len(x)):
+#        tripfile.write('{0:>12.4f}   {1:>8.4f}   {2:>8.4f}\n'.format(x[i], y[i], z2rel[i]))
+#z2_est = Estimation(np.array(x), np.array(y), np.array(r))
+#with open('seam_r.dat', 'w') as efile:
+#    for i in range(len(xv[1])):
+#        zv = z2_est.estimate(xv[1][i], yv[1][i])
+#        efile.write('{0:>12.4f}   {1:>8.4f}   {2:>8.4f}\n'.format(xv[1][i], yv[1][i], zv))
+#with open('trip_r.dat', 'w') as tripfile:
+#    for i in range(len(x)):
+#        tripfile.write('{0:>12.4f}   {1:>8.4f}   {2:>8.4f}\n'.format(x[i], y[i], r[i]))
     
-
-
-
+# Save the figure
 fig.set_size_inches(16,9)
 fig.savefig(outputfilename,dpi=300)
 

@@ -123,20 +123,22 @@ for i in range(len(z3)):
 
 
 # Build the x,y mesh
-xi = np.linspace(min(x),max(x),100)
-yi = np.linspace(min(y),max(y),100)
+xi = np.linspace(min(x),max(x),500)
+yi = np.linspace(min(y),max(y),500)
 xg, yg = np.meshgrid(xi,yi)
 
 # Place into arrays
 xy_arr = np.array(list(zip(x,y))) 
 z_arr = np.array(z1)
+z_arr2 = np.array(z2rel)
 
 # Build the grid
 z1g = griddata(xy_arr, z_arr, (xg,yg), method='cubic')
+z2g = griddata(xy_arr, z_arr2, (xg,yg), method='cubic')
 
 # Adjust cmap for easy visulazion of seem
 cmap = cm.get_cmap('seismic')
-shifted_cmap = shiftedColorMap(cmap, midpoint=0.310, name='shifted')
+shifted_cmap = shiftedColorMap(cmap, midpoint=0.340, name='shifted')
 
 # Set number of contours
 ncontours = 75
@@ -168,6 +170,8 @@ afpcolor = af.pcolor(xg, yg, z1g, cmap = shifted_cmap)
 cbar1 = plt.colorbar(afpcolor, orientation='horizontal', shrink=0.8)
 cbar1.set_label('E(trip)-E(sing) (kcal/mol)')
 
+#bfcontour = af.contour(xg, yg, z2g, ncontours, color='black')
+
 # Plot the triplet contoursi
 #bf = fig.add_subplot(122)
 #bfcontour = bf.contourf(xg, yg, z2g, ncontours, cmap='autumn')
@@ -182,15 +186,15 @@ for contour in afcontour.collections:
         data = path.vertices
         xv.append(data[:,0])
         yv.append(data[:,1])
-        #plt.plot(data[:,0], data[:,1],
-        #         color='black',  linewidth=c.get_linewidth()[0])
+       #plt.plot(data[:,0], data[:,1],
+       #         color='black',  linewidth=c.get_linewidth()[0])
 
-# energy
-#zint = griddata(xyarr, z2arr, (xv[1],yv[1]), method='cubic')
-#with open('griddata_e', 'w') as gridfile:
-#    for i in range(len(zint)):
-#        gridfile.write('{0:>12.4f}   {1:>8.4f}   {2:>8.4f}\n'.format(xv[1][i], yv[1][i], zint[i]))
-#
+ energy
+zint = griddata(xyarr, z2arr, (xv[1],yv[1]), method='cubic')
+with open('griddata_e', 'w') as gridfile:
+    for i in range(len(zint)):
+        gridfile.write('{0:>12.4f}   {1:>8.4f}   {2:>8.4f}\n'.format(xv[1][i], yv[1][i], zint[i]))
+
 #
 ## Set Estimate object
 #z2_est = Estimation(np.array(x), np.array(y), np.array(z2rel))

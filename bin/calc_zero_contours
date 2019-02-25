@@ -14,26 +14,31 @@ inputfilename = sys.argv[1]
 with open(inputfilename,'r') as infile:
   data = infile.readlines()
 
+# allowed x and y vals
+xallow = list(np.arange(1.4, 2.5, 0.1))
+yallow = list(np.arange(92.0, 180.0, 2.0))
+for xval in xallow:
+    print(xval)
+print(yallow)
+print(len(xallow))
+print(len(yallow))
+
+sys.exit()
+
 # Put content of input file into various list to be altered later.
-x = []
-y = []
-z1 = []
-z2 = []
-z3 = []
+x, y, z1, z2 = [], [], [], []
 for i in range(1,len(data)):
   if '#' not in data[i].strip():
     tmp = data[i].strip().split()
-    if tmp[3] != '0.000':
-#        print(tmp[0][3])
-      if (tmp[0][3] == '0' or tmp[0][3] == '5') and float(tmp[1]) % 2 == 0: 
-        print(tmp[0]+'\t'+tmp[1])
-        x.append(float(tmp[0]))
-        y.append(float(tmp[1]))
-        z1.append(float(tmp[2]))
-        z2.append(float(tmp[3]))
-
-#for val in y:
-#    print(val)
+    for xval in xallow:
+        if np.isclose(float(tmp[0]), xval, atol=1.e-3):
+            for yval in yallow:
+                if np.isclose(float(tmp[1]), yval, atol=1.e-3):
+                    print(tmp[0]+'\t'+tmp[1])
+                    x.append(float(tmp[0]))
+                    y.append(float(tmp[1]))
+                    z1.append(float(tmp[2]))
+                    z2.append(float(tmp[3]))
 
 # Get relative energies
 z2rel = []

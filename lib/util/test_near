@@ -1,12 +1,17 @@
+#!/usr/bin/env python
+
+"""
+  Checks the accuracy of interpolated values against a set of values that were directly computed.
+"""
+
 import sys
 import numpy as np
 
-f1 = sys.argv[1]
-f2 = sys.argv[2]
 
 
 def get_vals(fname):
-
+    """ Read the values from the files.
+    """
     x, y, z = [], [], []
     with open(fname,'r') as efile:
         for line in efile:
@@ -19,16 +24,22 @@ def get_vals(fname):
 
 
 def calc_dist(xa, ya, xb, yb):
-
+    """ Calculates the distance between a pair of (x,y) points
+    """
     dist = np.sqrt( (xb-xa)**2 + (yb-ya)**2 )
 
     return dist
 
 
+# Get the two files
+f1 = sys.argv[1]
+f2 = sys.argv[2]
+
+# Obtain the values from the files
 x1, y1, z1 = get_vals(f1)
 x2, y2, z2 = get_vals(f2)
 
-
+# Determines the point at shortest distance and determines difference in Z-values
 short_dist = None
 dif = 0.0
 all_difs = []
@@ -45,6 +56,7 @@ for i in range(len(x1)):
     all_difs.append(dif)
     short_dist = None
 
+# Print out the information
 print('\n\n')
 print(max(all_difs))
 print(sum(all_difs)/len(all_difs))

@@ -71,20 +71,26 @@ def buildgrid(x, y, z, xg, yg):
     """
 
     # Place into arrays
-    xy_arr = np.array(list(zip(x,y))) 
+    xy_arr = np.array(list(zip(x, y))) 
     z1_arr = np.array(z)
     
-    # Build the grid
-    zgrid = griddata(xy_arr, z_arr, (xg,yg), method='cubic')
+    # Build the grid, using cubic method as default
+    zg = griddata(xy_arr, z_arr, (xg, yg), method='cubic')
 
-    return zgrid
+    return zg
 
 
-def determine_zero_contour_pts(contour): 
+def determine_zero_contour_pts(xg, yg, zg, ncontours): 
     """ Finds the x,y points on the zero contour levels and then
         uses interpolation to find the z values associated with the x,y points
     """
+
+    # Build matplotlib contour object, specifying a return of the 0-levels
+    fig = plt.figure()
+    af = fig.add_subplot(111)
+    afcontour = af.contour(xg, yg, z1g, ncontours, levels=[0])
     
+    # Get the (x, y) coordinate pairs along the 0-level contour
     xc, yc = [], []
     for contour in afcontour.collections:
         for path in contour.get_paths():
@@ -95,18 +101,47 @@ def determine_zero_contour_pts(contour):
     return xc, yc
 
 
-def interp_zero_contour_vals(x, y, z, xc, yc): 
+def interp_zero_contour_vals_gd(x, y, z, xc, yc): 
     """ Finds the x,y points on the zero contour levels and then
         uses interpolation to find the z values associated with the x,y points
     """
+    
     # Place into arrays
     xy_arr = np.array(list(zip(x,y))) 
     z1_arr = np.array(z)
 
     # Interpolate the new set of points to get the z-values
-    zint = griddata(xy_arr, z_arr, (xc,yc), method='cubic')
+    assert len(xc) == len(yc)
+    for i in range(xc):
+        zc = griddata(xy_arr, z_arr, (xc[i], yc[i]), method='cubic')
     
-    return zint
+    return zc
+
+
+def write_gd_interp_files(xc, yc, zc):
+    """ writes the files for the gd files
+    """
+
+    assert len(xc) == len(yc) == len(zc)
+    for i in range(len(xc)):
+        assert len(xc[i]) == len(yc[i]) == len(zc[i])
+        filename = 'gd_seam'+str(i+1)+'.dat'
+        with open(filename, 'w') as gridfile:
+            for j in range(len(xc[i])):
+                gridfile.write('{0:>12.4f}  {1:>8.4f}  {2:>8.4f}\n'.format(xc[i][j], yc[i][j], zc[i][j]))
+
+    return None
+
+
+def interp_zero_contour_vals_rbf(x, y, z, xc, yc): 
+    """ uses scipy.Rbf to get interpolated values, as an alternative to griddata
+    """
+    
+    rbf_2d = Rbf(xarr, yarr, zarr2, function='gaussian')
+    xgc, ygc = np.meshgrid(xv[0],yv[0])
+    zgc = rbf_2d(xgc, ygc)
+    
+    return zgc
 
 
 class Estimation():

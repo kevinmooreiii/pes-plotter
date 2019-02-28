@@ -7,8 +7,7 @@ and output publishable quality plots.
 __authors__ = "Kevin Moore"
 __updated__ = "2019-01-31"
 
-from ..pes_lib import rxn_path
-
+import peslib
 
 # Call the series of functions which read the command line input and
 in_proc.input_processor()

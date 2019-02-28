@@ -8,7 +8,7 @@ import sys
 import numpy as np
 from scipy.interpolate import griddata
 import matplotlib.pyplot as plt
-
+import peslib
 
 # Set other useful parameters
 ncontours = 75
